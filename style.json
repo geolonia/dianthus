@@ -3,18 +3,17 @@
   "name": "GSI Japan + OpenStreetMap based style for Geolonia",
   "metadata": {},
   "sources": {
-    "natural-earth": {
+    "oceanus": {
       "type": "vector",
-      "url": "https://cdn.geolonia.com/tiles/natural-earth.json"
+      "url": "https://tileserver.geolonia.com/oceanus/tiles.json?key=YOUR-API-KEY"
     },
     "gsi-japan": {
       "type": "vector",
       "url": "https://cdn.geolonia.com/tiles/gsi.json"
     },
-    "geolonia": {
+    "geolonia-water": {
       "type": "vector",
-      "minzoom": 8,
-      "url": "https://api.geolonia.com/v1/sources?key=YOUR-API-KEY"
+      "url": "https://tileserver.geolonia.com/water/tiles.json?key=YOUR-API-KEY"
     }
   },
   "sprite": "https://sprites.geolonia.com/basic",
@@ -33,19 +32,7 @@
       "source": "gsi-japan",
       "source-layer": "road",
       "minzoom": 16,
-      "filter": [
-        "all",
-        [
-          ">=",
-          "ftCode",
-          2200
-        ],
-        [
-          "<",
-          "ftCode",
-          2700
-        ]
-      ],
+      "filter": ["all", [">=", "ftCode", 2200], ["<", "ftCode", 2700]],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -54,33 +41,7 @@
       "paint": {
         "line-color": "#EEEEEE",
         "line-width": 3,
-        "line-dasharray": [
-          3,
-          2,
-          0.5,
-          2
-        ]
-      }
-    },
-    {
-      "id": "structurea",
-      "type": "fill",
-      "source": "gsi-japan",
-      "source-layer": "structurea",
-      "minzoom": 15,
-      "filter": [
-        "all",
-        [
-          "==",
-          "$type",
-          "Polygon"
-        ]
-      ],
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "#FAFAFA"
+        "line-dasharray": [3, 2, 0.5, 2]
       }
     },
     {
@@ -92,31 +53,8 @@
         "all",
         [
           "!=",
-          [
-            "to-number",
-            [
-              "get",
-              "alti"
-            ]
-          ],
-          [
-            "*",
-            100,
-            [
-              "round",
-              [
-                "*",
-                0.01,
-                [
-                  "to-number",
-                  [
-                    "get",
-                    "alti"
-                  ]
-                ]
-              ]
-            ]
-          ]
+          ["to-number", ["get", "alti"]],
+          ["*", 100, ["round", ["*", 0.01, ["to-number", ["get", "alti"]]]]]
         ]
       ],
       "paint": {
@@ -133,31 +71,8 @@
         "all",
         [
           "==",
-          [
-            "to-number",
-            [
-              "get",
-              "alti"
-            ]
-          ],
-          [
-            "*",
-            50,
-            [
-              "round",
-              [
-                "*",
-                0.02,
-                [
-                  "to-number",
-                  [
-                    "get",
-                    "alti"
-                  ]
-                ]
-              ]
-            ]
-          ]
+          ["to-number", ["get", "alti"]],
+          ["*", 50, ["round", ["*", 0.02, ["to-number", ["get", "alti"]]]]]
         ]
       ],
       "paint": {
@@ -170,14 +85,7 @@
       "type": "line",
       "source": "gsi-japan",
       "source-layer": "river",
-      "filter": [
-        "all",
-        [
-          "!=",
-          "ftCode",
-          5322
-        ]
-      ],
+      "filter": ["all", ["!=", "ftCode", 5322]],
       "layout": {
         "line-cap": "round"
       },
@@ -186,28 +94,33 @@
         "line-width": {
           "base": 1.2,
           "stops": [
-            [
-              10,
-              0.8
-            ],
-            [
-              20,
-              6
-            ]
+            [10, 0.8],
+            [20, 6]
           ]
         }
       }
     },
     {
-      "id": "water-offset",
+      "id": "geolonia-water-ocean",
       "type": "fill",
-      "source": "natural-earth",
+      "source": "geolonia-water",
       "source-layer": "water",
-      "maxzoom": 8,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "rgba(87, 112, 131, 1)"
+      }
+    },
+    {
+      "id": "oc-ocean",
+      "type": "fill",
+      "source": "oceanus",
+      "source-layer": "oc-water",
       "filter": [
-        "==",
-        "$type",
-        "Polygon"
+        "all",
+        ["==", ["get", "class"], "ocean"],
+        ["==", ["get", "subclass"], 200]
       ],
       "layout": {
         "visibility": "visible"
